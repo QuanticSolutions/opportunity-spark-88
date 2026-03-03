@@ -26,9 +26,9 @@ export default function CategoryGrid() {
           {categories.map((cat) => (
             <button
               key={cat.label}
-              className="group flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:border-secondary hover:shadow-[var(--card-shadow-hover)] hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-ring"
+              className="group glow-border flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-[var(--card-shadow-hover)] hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-muted text-secondary transition-colors group-hover:bg-secondary group-hover:text-secondary-foreground">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent text-primary transition-all duration-300 group-hover:btn-gradient group-hover:text-primary-foreground">
                 <cat.icon size={28} strokeWidth={1.8} />
               </div>
               <span className="text-sm font-semibold text-foreground">{cat.label}</span>

@@ -18,7 +18,7 @@ export default function SearchBar() {
           <p className="mt-3 text-muted-foreground">Search thousands of scholarships, jobs and more</p>
         </div>
 
-        <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-border bg-card p-4 shadow-[var(--search-shadow)] md:p-6">
+        <div className="mx-auto mt-10 max-w-3xl glass-card rounded-2xl border border-border/50 p-4 shadow-[var(--search-shadow)] md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-end">
             <div className="flex-1">
               <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Keyword</label>
@@ -28,7 +28,7 @@ export default function SearchBar() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   placeholder="e.g. Data Science, Marketing"
-                  className="pl-9"
+                  className="pl-9 focus-visible:ring-primary"
                 />
               </div>
             </div>
@@ -41,7 +41,7 @@ export default function SearchBar() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="City or country"
-                  className="pl-9"
+                  className="pl-9 focus-visible:ring-primary"
                   disabled={remote}
                 />
               </div>
@@ -53,11 +53,11 @@ export default function SearchBar() {
                   type="checkbox"
                   checked={remote}
                   onChange={() => setRemote(!remote)}
-                  className="h-4 w-4 rounded border-border accent-secondary"
+                  className="h-4 w-4 rounded border-border accent-primary"
                 />
                 Remote
               </label>
-              <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold px-6">
+              <Button className="btn-gradient font-semibold px-6 rounded-xl">
                 Search
               </Button>
             </div>
