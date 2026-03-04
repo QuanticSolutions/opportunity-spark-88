@@ -30,13 +30,15 @@ export async function updateProfile(
 ) {
   const { data, error } = await supabase
     .from("profiles")
-    .update(updates)
-    .eq("id", userId)
+    .upsert(
+      { id: userId, ...updates },
+      { onConflict: "id" }
+    )
     .select()
     .single();
 
   if (error) throw error;
-  return data as unknown as Profile;
+  return data as Profile;
 }
 
 export async function uploadAvatar(userId: string, file: File): Promise<string> {

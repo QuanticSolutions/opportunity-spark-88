@@ -74,11 +74,11 @@ export default function SignUpAccount() {
       if (data.user) {
         // Update profile with role and full name
         try {
-          await updateProfile(data.user.id, { role, full_name: form.fullName });
+          await updateProfile(data.user.id, { ...(role ? { role } : {}), full_name: form.fullName });
         } catch {
           // Profile trigger may not have completed yet — retry once
           await new Promise((r) => setTimeout(r, 1000));
-          await updateProfile(data.user.id, { role, full_name: form.fullName });
+          await updateProfile(data.user.id, { ...(role ? { role } : {}), full_name: form.fullName });
         }
 
         toast({ title: "Account created!", description: "Let's complete your profile." });
