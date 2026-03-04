@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoginModal from "@/components/LoginModal";
@@ -13,6 +14,7 @@ const navLinks = [
 export default function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -32,7 +34,7 @@ export default function SiteHeader() {
             <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary/5 font-semibold px-5" onClick={() => setLoginOpen(true)}>
               Login
             </Button>
-            <Button size="sm" className="btn-gradient font-semibold px-5 rounded-lg">
+            <Button size="sm" className="btn-gradient font-semibold px-5 rounded-lg" onClick={() => navigate("/signup")}>
               Sign Up
             </Button>
           </nav>
@@ -54,7 +56,7 @@ export default function SiteHeader() {
             <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 font-semibold w-full" onClick={() => { setOpen(false); setLoginOpen(true); }}>
               Login
             </Button>
-            <Button className="btn-gradient font-semibold w-full rounded-lg">
+            <Button className="btn-gradient font-semibold w-full rounded-lg" onClick={() => { setOpen(false); navigate("/signup"); }}>
               Sign Up
             </Button>
           </nav>
