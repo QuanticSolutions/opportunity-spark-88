@@ -14,6 +14,14 @@ import DashboardSeeker from "./pages/DashboardSeeker";
 import DashboardProvider from "./pages/DashboardProvider";
 import NotFound from "./pages/NotFound";
 
+// Seeker dashboard sub-pages
+import Explore from "./pages/dashboard/seeker/Explore";
+import AppliedJobs from "./pages/dashboard/seeker/AppliedJobs";
+import SavedJobs from "./pages/dashboard/seeker/SavedJobs";
+import Notifications from "./pages/dashboard/seeker/Notifications";
+import ProfileInfo from "./pages/dashboard/seeker/ProfileInfo";
+import PasswordSecurity from "./pages/dashboard/seeker/PasswordSecurity";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,7 +40,17 @@ const App = () => (
 
             {/* Auth required */}
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-            <Route path="/dashboard/seeker" element={<ProtectedRoute requireComplete><DashboardSeeker /></ProtectedRoute>} />
+
+            {/* Seeker dashboard with sub-routes */}
+            <Route path="/dashboard/seeker" element={<ProtectedRoute requireComplete><DashboardSeeker /></ProtectedRoute>}>
+              <Route index element={<Explore />} />
+              <Route path="applied-jobs" element={<AppliedJobs />} />
+              <Route path="saved-jobs" element={<SavedJobs />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="profile" element={<ProfileInfo />} />
+              <Route path="security" element={<PasswordSecurity />} />
+            </Route>
+
             <Route path="/dashboard/provider" element={<ProtectedRoute requireComplete><DashboardProvider /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />

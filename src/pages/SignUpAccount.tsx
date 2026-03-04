@@ -153,13 +153,13 @@ export default function SignUpAccount() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <PasswordInput id="password" placeholder="Min. 8 characters" showStrength value={form.password} onChange={set("password")} />
+                <PasswordInput id="password" placeholder="Min. 8 characters" showStrength value={form.password} onChange={(v) => { setForm((f) => ({ ...f, password: v })); setErrors((prev) => ({ ...prev, password: "" })); }} />
                 {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <PasswordInput id="confirmPassword" placeholder="Re-enter password" value={form.confirmPassword} onChange={set("confirmPassword")} />
+                <PasswordInput id="confirmPassword" placeholder="Re-enter password" value={form.confirmPassword} onChange={(v) => { setForm((f) => ({ ...f, confirmPassword: v })); setErrors((prev) => ({ ...prev, confirmPassword: "" })); }} />
                 {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
               </div>
 

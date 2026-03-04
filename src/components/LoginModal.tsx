@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
+import { getProfile } from "@/services/profile";
 
 interface LoginModalProps {
   open: boolean;
@@ -17,11 +19,21 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const redirectToDashboard = async (userId: string) => {
+    const profile = await getProfile(userId);
+    if (profile?.role === "provider") {
+      navigate("/dashboard/provider", { replace: true });
+    } else {
+      navigate("/dashboard/seeker", { replace: true });
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
     if (error) {
@@ -29,6 +41,7 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
     } else {
       toast({ title: "Welcome back!" });
       onOpenChange(false);
+      if (data.user) await redirectToDashboard(data.user.id);
     }
   };
 
@@ -51,28 +64,12 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
 
         <form onSubmit={handleLogin} className="mt-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="focus-visible:ring-primary"
-            />
+            <Label htmlFor="login-email">Email</Label>
+            <Input id="login-email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="focus-visible:ring-primary" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="focus-visible:ring-primary"
-            />
+            <Label htmlFor="login-password">Password</Label>
+            <Input id="login-password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="focus-visible:ring-primary" />
           </div>
           <Button type="submit" disabled={loading} className="w-full btn-gradient font-semibold rounded-xl">
             {loading ? "Signing in..." : "Login"}
@@ -80,12 +77,8 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
         </form>
 
         <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-3 text-muted-foreground">OR</span>
-          </div>
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+          <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-3 text-muted-foreground">OR</span></div>
         </div>
 
         <Button variant="outline" className="w-full gap-3 rounded-xl font-semibold" onClick={handleGoogleLogin}>
