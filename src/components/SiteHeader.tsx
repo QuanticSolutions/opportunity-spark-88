@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, User, LayoutDashboard, Settings, LogOut } from "lucide-react";
+import { Menu, X, User, LayoutDashboard, Settings, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -14,10 +14,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/LoginModal";
 
 const navLinks = [
-  { label: "Scholarships", href: "#categories" },
-  { label: "Jobs", href: "#categories" },
-  { label: "Grants", href: "#categories" },
-  { label: "About", href: "#counters" },
+  { label: "Home", href: "/" },
+  { label: "Opportunities", href: "/opportunities" },
+  { label: "Articles", href: "/articles" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function SiteHeader() {
@@ -41,20 +42,26 @@ export default function SiteHeader() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 md:flex">
+          <nav className="hidden items-center gap-6 lg:flex">
             {navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+              <button
+                key={l.label}
+                onClick={() => navigate(l.href)}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
                 {l.label}
-              </a>
+              </button>
             ))}
+          </nav>
 
+          <div className="hidden items-center gap-3 lg:flex">
             {!loading && !user && (
               <>
-                <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary/5 font-semibold px-5" onClick={() => setLoginOpen(true)}>
-                  Login
+                <Button variant="ghost" size="sm" className="text-foreground font-medium" onClick={() => setLoginOpen(true)}>
+                  Sign In
                 </Button>
                 <Button size="sm" className="btn-gradient font-semibold px-5 rounded-lg" onClick={() => navigate("/signup")}>
-                  Sign Up
+                  Get Started
                 </Button>
               </>
             )}
@@ -81,7 +88,7 @@ export default function SiteHeader() {
                   <DropdownMenuItem onClick={() => navigate(dashboardPath)} className="cursor-pointer gap-2 hover:bg-accent">
                     <LayoutDashboard size={14} /> Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/profile`)} className="cursor-pointer gap-2 hover:bg-accent">
+                  <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/security`)} className="cursor-pointer gap-2 hover:bg-accent">
                     <Settings size={14} /> Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -91,10 +98,10 @@ export default function SiteHeader() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-          </nav>
+          </div>
 
           {/* Mobile toggle */}
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             {!loading && user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -131,19 +138,23 @@ export default function SiteHeader() {
 
         {/* Mobile nav */}
         {open && (
-          <nav className="flex flex-col gap-4 border-t border-border bg-card p-6 md:hidden animate-fade-in">
+          <nav className="flex flex-col gap-4 border-t border-border bg-card p-6 lg:hidden animate-fade-in">
             {navLinks.map((l) => (
-              <a key={l.label} href={l.href} onClick={() => setOpen(false)} className="text-base font-medium text-foreground">
+              <button
+                key={l.label}
+                onClick={() => { setOpen(false); navigate(l.href); }}
+                className="text-base font-medium text-foreground text-left"
+              >
                 {l.label}
-              </a>
+              </button>
             ))}
             {!loading && !user && (
               <>
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 font-semibold w-full" onClick={() => { setOpen(false); setLoginOpen(true); }}>
-                  Login
+                  Sign In
                 </Button>
                 <Button className="btn-gradient font-semibold w-full rounded-lg" onClick={() => { setOpen(false); navigate("/signup"); }}>
-                  Sign Up
+                  Get Started
                 </Button>
               </>
             )}
