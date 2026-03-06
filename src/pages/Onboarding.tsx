@@ -85,7 +85,7 @@ export default function Onboarding() {
       toast({ title: "Profile complete! 🎉", description: "Welcome to Somopportunity" });
 
       const role = profile?.role || "seeker";
-      navigate(role === "provider" ? "/dashboard/provider" : "/dashboard/seeker", { replace: true });
+      navigate(role === "provider" ? "/provider/subscribe" : "/dashboard/seeker", { replace: true });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
