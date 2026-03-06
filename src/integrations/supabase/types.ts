@@ -16,7 +16,9 @@ export type Database = {
     Tables: {
       applications: {
         Row: {
+          cover_letter: string | null
           created_at: string
+          documents: Json | null
           id: string
           opportunity_id: string
           status: string
@@ -24,7 +26,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cover_letter?: string | null
           created_at?: string
+          documents?: Json | null
           id?: string
           opportunity_id: string
           status?: string
@@ -32,7 +36,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cover_letter?: string | null
           created_at?: string
+          documents?: Json | null
           id?: string
           opportunity_id?: string
           status?: string
@@ -50,6 +56,61 @@ export type Database = {
           {
             foreignKeyName: "applications_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          application_id: string | null
+          body: string
+          created_at: string
+          id: string
+          read: boolean
+          recipient_id: string
+          sender_id: string
+          subject: string
+        }
+        Insert: {
+          application_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          recipient_id: string
+          sender_id: string
+          subject: string
+        }
+        Update: {
+          application_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          recipient_id?: string
+          sender_id?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -93,36 +154,51 @@ export type Database = {
       }
       opportunities: {
         Row: {
+          allow_internal_apply: boolean
+          attachments: Json | null
           company: string | null
           created_at: string
+          deadline: string | null
           description: string | null
+          external_link: string | null
           id: string
           location: string | null
           provider_id: string | null
+          requirements: string | null
           status: string
           title: string
           type: string
           updated_at: string
         }
         Insert: {
+          allow_internal_apply?: boolean
+          attachments?: Json | null
           company?: string | null
           created_at?: string
+          deadline?: string | null
           description?: string | null
+          external_link?: string | null
           id?: string
           location?: string | null
           provider_id?: string | null
+          requirements?: string | null
           status?: string
           title: string
           type?: string
           updated_at?: string
         }
         Update: {
+          allow_internal_apply?: boolean
+          attachments?: Json | null
           company?: string | null
           created_at?: string
+          deadline?: string | null
           description?: string | null
+          external_link?: string | null
           id?: string
           location?: string | null
           provider_id?: string | null
+          requirements?: string | null
           status?: string
           title?: string
           type?: string
@@ -134,6 +210,38 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunity_addons: {
+        Row: {
+          addon_type: string
+          created_at: string
+          id: string
+          opportunity_id: string
+          price: number
+        }
+        Insert: {
+          addon_type: string
+          created_at?: string
+          id?: string
+          opportunity_id: string
+          price?: number
+        }
+        Update: {
+          addon_type?: string
+          created_at?: string
+          id?: string
+          opportunity_id?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_addons_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
             referencedColumns: ["id"]
           },
         ]
@@ -171,6 +279,51 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          plan_id: string
+          provider_id: string
+          renewal_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plan_id: string
+          provider_id: string
+          renewal_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plan_id?: string
+          provider_id?: string
+          renewal_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_subscriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_jobs: {
         Row: {
           created_at: string
@@ -206,6 +359,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          display_name: string
+          features: Json
+          id: string
+          name: string
+          posting_limit: number | null
+          price_monthly: number
+          tier: number
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          features?: Json
+          id?: string
+          name: string
+          posting_limit?: number | null
+          price_monthly?: number
+          tier?: number
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          features?: Json
+          id?: string
+          name?: string
+          posting_limit?: number | null
+          price_monthly?: number
+          tier?: number
+        }
+        Relationships: []
       }
     }
     Views: {
