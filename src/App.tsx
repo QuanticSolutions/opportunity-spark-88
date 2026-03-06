@@ -14,7 +14,7 @@ import SignUp from "./pages/SignUp";
 import SignUpAccount from "./pages/SignUpAccount";
 import Onboarding from "./pages/Onboarding";
 import DashboardSeeker from "./pages/DashboardSeeker";
-import DashboardProvider from "./pages/DashboardProvider";
+import SubscriptionSelect from "./pages/SubscriptionSelect";
 import NotFound from "./pages/NotFound";
 
 // Seeker dashboard sub-pages
@@ -24,6 +24,17 @@ import SavedJobs from "./pages/dashboard/seeker/SavedJobs";
 import Notifications from "./pages/dashboard/seeker/Notifications";
 import ProfileInfo from "./pages/dashboard/seeker/ProfileInfo";
 import PasswordSecurity from "./pages/dashboard/seeker/PasswordSecurity";
+
+// Provider dashboard
+import ProviderLayout from "./components/dashboard/provider/ProviderLayout";
+import ProviderHome from "./pages/dashboard/provider/ProviderHome";
+import Opportunities from "./pages/dashboard/provider/Opportunities";
+import Applicants from "./pages/dashboard/provider/Applicants";
+import ProviderMessages from "./pages/dashboard/provider/Messages";
+import ProviderDocuments from "./pages/dashboard/provider/Documents";
+import ProviderSubscription from "./pages/dashboard/provider/Subscription";
+import ProviderTeam from "./pages/dashboard/provider/Team";
+import ProviderSettings from "./pages/dashboard/provider/ProviderSettings";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +58,9 @@ const App = () => (
             {/* Auth required */}
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
+            {/* Provider subscription selection */}
+            <Route path="/provider/subscribe" element={<ProtectedRoute><SubscriptionSelect /></ProtectedRoute>} />
+
             {/* Seeker dashboard with sub-routes */}
             <Route path="/dashboard/seeker" element={<ProtectedRoute requireComplete><DashboardSeeker /></ProtectedRoute>}>
               <Route index element={<Explore />} />
@@ -57,7 +71,17 @@ const App = () => (
               <Route path="security" element={<PasswordSecurity />} />
             </Route>
 
-            <Route path="/dashboard/provider" element={<ProtectedRoute requireComplete><DashboardProvider /></ProtectedRoute>} />
+            {/* Provider dashboard with sub-routes */}
+            <Route path="/dashboard/provider" element={<ProtectedRoute requireComplete><ProviderLayout /></ProtectedRoute>}>
+              <Route index element={<ProviderHome />} />
+              <Route path="opportunities" element={<Opportunities />} />
+              <Route path="applicants" element={<Applicants />} />
+              <Route path="messages" element={<ProviderMessages />} />
+              <Route path="documents" element={<ProviderDocuments />} />
+              <Route path="subscription" element={<ProviderSubscription />} />
+              <Route path="team" element={<ProviderTeam />} />
+              <Route path="settings" element={<ProviderSettings />} />
+            </Route>
 
             <Route path="*" element={<NotFound />} />
           </Routes>
