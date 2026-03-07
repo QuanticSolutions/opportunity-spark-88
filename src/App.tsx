@@ -15,6 +15,8 @@ import SignUpAccount from "./pages/SignUpAccount";
 import Onboarding from "./pages/Onboarding";
 import DashboardSeeker from "./pages/DashboardSeeker";
 import SubscriptionSelect from "./pages/SubscriptionSelect";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 // Seeker dashboard sub-pages
@@ -54,6 +56,8 @@ const App = () => (
             {/* Guest-only routes */}
             <Route path="/signup" element={<GuestRoute><SignUp /></GuestRoute>} />
             <Route path="/signup/account" element={<GuestRoute><SignUpAccount /></GuestRoute>} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Auth required */}
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
