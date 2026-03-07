@@ -70,6 +70,9 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
           <div className="space-y-2">
             <Label htmlFor="login-password">Password</Label>
             <Input id="login-password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="focus-visible:ring-primary" />
+            <div className="text-right">
+              <a href="/forgot-password" onClick={(e) => { e.preventDefault(); onOpenChange(false); navigate("/forgot-password"); }} className="text-xs text-primary hover:underline">Forgot Password?</a>
+            </div>
           </div>
           <Button type="submit" disabled={loading} className="w-full btn-gradient font-semibold rounded-xl">
             {loading ? "Signing in..." : "Login"}
