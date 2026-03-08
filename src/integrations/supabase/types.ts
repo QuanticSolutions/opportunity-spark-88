@@ -416,7 +416,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_opportunity_views: {
+        Args: { opp_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "seeker" | "provider" | "admin" | "editor" | "viewer"
