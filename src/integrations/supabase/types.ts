@@ -158,51 +158,69 @@ export type Database = {
           attachments: Json | null
           company: string | null
           created_at: string
+          currency: string | null
           deadline: string | null
           description: string | null
           external_link: string | null
           id: string
+          is_verified: boolean
           location: string | null
           provider_id: string | null
           requirements: string | null
           status: string
+          stipend_max: number | null
+          stipend_min: number | null
           title: string
           type: string
           updated_at: string
+          views_count: number
+          work_mode: string
         }
         Insert: {
           allow_internal_apply?: boolean
           attachments?: Json | null
           company?: string | null
           created_at?: string
+          currency?: string | null
           deadline?: string | null
           description?: string | null
           external_link?: string | null
           id?: string
+          is_verified?: boolean
           location?: string | null
           provider_id?: string | null
           requirements?: string | null
           status?: string
+          stipend_max?: number | null
+          stipend_min?: number | null
           title: string
           type?: string
           updated_at?: string
+          views_count?: number
+          work_mode?: string
         }
         Update: {
           allow_internal_apply?: boolean
           attachments?: Json | null
           company?: string | null
           created_at?: string
+          currency?: string | null
           deadline?: string | null
           description?: string | null
           external_link?: string | null
           id?: string
+          is_verified?: boolean
           location?: string | null
           provider_id?: string | null
           requirements?: string | null
           status?: string
+          stipend_max?: number | null
+          stipend_min?: number | null
           title?: string
           type?: string
           updated_at?: string
+          views_count?: number
+          work_mode?: string
         }
         Relationships: [
           {
