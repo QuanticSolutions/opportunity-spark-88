@@ -17,6 +17,8 @@ import DashboardSeeker from "./pages/DashboardSeeker";
 import SubscriptionSelect from "./pages/SubscriptionSelect";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import OpportunitiesBrowse from "./pages/OpportunitiesBrowse";
+import OpportunityDetails from "./pages/OpportunityDetails";
 import NotFound from "./pages/NotFound";
 
 // Seeker dashboard sub-pages
@@ -52,6 +54,8 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/articles" element={<Articles />} />
+            <Route path="/opportunities" element={<OpportunitiesBrowse />} />
+            <Route path="/opportunities/:id" element={<OpportunityDetails />} />
 
             {/* Guest-only routes */}
             <Route path="/signup" element={<GuestRoute><SignUp /></GuestRoute>} />
