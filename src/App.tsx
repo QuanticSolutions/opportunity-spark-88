@@ -68,8 +68,10 @@ const App = () => (
             {/* Auth required */}
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
-            {/* Provider subscription selection */}
+            {/* Provider subscription flow */}
             <Route path="/provider/subscribe" element={<ProtectedRoute><SubscriptionSelect /></ProtectedRoute>} />
+            <Route path="/provider/payment" element={<ProtectedRoute><ProviderPayment /></ProtectedRoute>} />
+            <Route path="/provider/pending" element={<ProtectedRoute><ProviderPending /></ProtectedRoute>} />
 
             {/* Seeker dashboard with sub-routes */}
             <Route path="/dashboard/seeker" element={<ProtectedRoute requireComplete><DashboardSeeker /></ProtectedRoute>}>
