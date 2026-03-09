@@ -187,13 +187,25 @@ export default function SiteHeader() {
                 {l.label}
               </button>
             ))}
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Opportunities</p>
+              {opportunityTypes.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => { setOpen(false); navigate(item.href); }}
+                  className="block w-full text-left text-sm text-muted-foreground py-1.5 pl-2 hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
             {!loading && !user && (
               <>
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 font-semibold w-full" onClick={() => { setOpen(false); setLoginOpen(true); }}>
-                  Sign In
+                  Login
                 </Button>
                 <Button className="btn-gradient font-semibold w-full rounded-lg" onClick={() => { setOpen(false); navigate("/signup"); }}>
-                  Get Started
+                  Join
                 </Button>
               </>
             )}
