@@ -33,9 +33,18 @@ export default function Subscription() {
   const selectPlan = async (planId: string) => {
     try {
       if (sub) {
-        await supabase.from("provider_subscriptions").update({ plan_id: planId, status: "pending_approval" }).eq("id", sub.id);
+        await supabase.from("provider_subscriptions").update({
+          plan_id: planId,
+          status: "pending_payment",
+          payment_status: "awaiting_payment",
+        }).eq("id", sub.id);
       } else {
-        await supabase.from("provider_subscriptions").insert({ provider_id: user!.id, plan_id: planId });
+        await supabase.from("provider_subscriptions").insert({
+          provider_id: user!.id,
+          plan_id: planId,
+          status: "pending_payment",
+          payment_status: "awaiting_payment",
+        });
       }
       toast({ title: "Plan selected", description: "Your subscription is under administrative review." });
       fetchData();

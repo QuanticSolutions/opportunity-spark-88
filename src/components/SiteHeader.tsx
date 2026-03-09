@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, User, LayoutDashboard, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, User, LayoutDashboard, Settings, LogOut, ChevronDown, Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -10,13 +10,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/LoginModal";
 
+const opportunityTypes = [
+  { label: "Scholarships", href: "/opportunities?type=scholarship" },
+  { label: "Fellowships", href: "/opportunities?type=fellowship" },
+  { label: "Internships", href: "/opportunities?type=internship" },
+  { label: "Grants", href: "/opportunities?type=grant" },
+  { label: "Workshops", href: "/opportunities?type=event" },
+  { label: "Conferences", href: "/opportunities?type=event" },
+];
+
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Opportunities", href: "/opportunities" },
-  { label: "Articles", href: "/articles" },
+  { label: "Jobs", href: "/opportunities?type=job" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -42,26 +57,50 @@ export default function SiteHeader() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {navLinks.map((l) => (
               <button
                 key={l.label}
                 onClick={() => navigate(l.href)}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary rounded-md"
               >
                 {l.label}
               </button>
             ))}
+
+            {/* Opportunities dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-primary bg-transparent">
+                    Opportunities
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid w-48 gap-1 p-2">
+                      {opportunityTypes.map((item) => (
+                        <button
+                          key={item.label}
+                          onClick={() => navigate(item.href)}
+                          className="rounded-md px-3 py-2 text-sm text-left text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             {!loading && !user && (
               <>
                 <Button variant="ghost" size="sm" className="text-foreground font-medium" onClick={() => setLoginOpen(true)}>
-                  Sign In
+                  Login
                 </Button>
                 <Button size="sm" className="btn-gradient font-semibold px-5 rounded-lg" onClick={() => navigate("/signup")}>
-                  Get Started
+                  Join
                 </Button>
               </>
             )}
@@ -148,13 +187,25 @@ export default function SiteHeader() {
                 {l.label}
               </button>
             ))}
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Opportunities</p>
+              {opportunityTypes.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => { setOpen(false); navigate(item.href); }}
+                  className="block w-full text-left text-sm text-muted-foreground py-1.5 pl-2 hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
             {!loading && !user && (
               <>
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 font-semibold w-full" onClick={() => { setOpen(false); setLoginOpen(true); }}>
-                  Sign In
+                  Login
                 </Button>
                 <Button className="btn-gradient font-semibold w-full rounded-lg" onClick={() => { setOpen(false); navigate("/signup"); }}>
-                  Get Started
+                  Join
                 </Button>
               </>
             )}

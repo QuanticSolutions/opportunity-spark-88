@@ -24,7 +24,8 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
   const redirectToDashboard = async (userId: string) => {
     const profile = await getProfile(userId);
     if (profile?.role === "provider") {
-      navigate("/dashboard/provider", { replace: true });
+      // Provider goes through subscription flow — SubscriptionSelect handles routing
+      navigate("/provider/subscribe", { replace: true });
     } else {
       navigate("/dashboard/seeker", { replace: true });
     }

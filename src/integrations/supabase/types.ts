@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          provider_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          provider_id: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          provider_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_notifications_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           cover_letter: string | null
@@ -299,28 +334,43 @@ export type Database = {
       }
       provider_subscriptions: {
         Row: {
+          admin_notes: string | null
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
           id: string
+          payment_status: string
           plan_id: string
           provider_id: string
+          receipt_url: string | null
           renewal_date: string | null
           status: string
           updated_at: string
         }
         Insert: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           id?: string
+          payment_status?: string
           plan_id: string
           provider_id: string
+          receipt_url?: string | null
           renewal_date?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           id?: string
+          payment_status?: string
           plan_id?: string
           provider_id?: string
+          receipt_url?: string | null
           renewal_date?: string | null
           status?: string
           updated_at?: string
@@ -374,6 +424,41 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          subscription_id: string
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          subscription_id: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_audit_logs_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "provider_subscriptions"
             referencedColumns: ["id"]
           },
         ]

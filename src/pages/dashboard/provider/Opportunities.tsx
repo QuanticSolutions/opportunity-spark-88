@@ -43,7 +43,7 @@ export default function Opportunities() {
       .eq("provider_id", user!.id)
       .single();
     if (data) {
-      setSubApproved(data.status === "approved");
+      setSubApproved(data.status === "approved" || data.status === "active");
       setPostingLimit((data.subscription_plans as any)?.posting_limit ?? null);
     }
   };
