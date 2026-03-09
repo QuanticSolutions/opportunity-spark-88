@@ -22,12 +22,18 @@ export default function SubscriptionSelect() {
       if (!user) return;
       const { data: existing } = await supabase
         .from("provider_subscriptions")
-        .select("id")
+        .select("id, status, payment_status")
         .eq("provider_id", user.id)
         .single();
 
       if (existing) {
-        navigate("/dashboard/provider", { replace: true });
+        if (existing.status === "active") {
+          navigate("/dashboard/provider", { replace: true });
+        } else if (existing.status === "pending_payment" || existing.payment_status === "awaiting_payment") {
+          navigate("/provider/payment", { replace: true });
+        } else {
+          navigate("/provider/pending", { replace: true });
+        }
         return;
       }
 
