@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, MapPin, Calendar, Filter, X, Briefcase, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { supabase } from "@/integrations/supabase/client";
 
-const categoryOptions = ["job", "internship", "scholarship", "fellowship", "grant", "event"];
+const categoryOptions = ["job", "internship", "scholarship", "fellowship", "grant", "workshop", "conference", "event"];
 const workModeOptions = ["remote", "onsite", "hybrid"];
 
 const categoryColors: Record<string, string> = {
@@ -23,6 +23,8 @@ const categoryColors: Record<string, string> = {
   fellowship: "bg-violet-100 text-violet-700",
   grant: "bg-rose-100 text-rose-700",
   event: "bg-sky-100 text-sky-700",
+  workshop: "bg-orange-100 text-orange-700",
+  conference: "bg-teal-100 text-teal-700",
 };
 
 const workModeColors: Record<string, string> = {
@@ -33,12 +35,21 @@ const workModeColors: Record<string, string> = {
 
 export default function OpportunitiesBrowse() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [opps, setOpps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedModes, setSelectedModes] = useState<string[]>([]);
+
+  // Sync URL category param → filter state on mount & param change
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) {
+      setSelectedCategories([cat]);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchOpps = async () => {
@@ -57,15 +68,35 @@ export default function OpportunitiesBrowse() {
     return opps.filter(o => {
       if (keyword && !o.title?.toLowerCase().includes(keyword.toLowerCase()) && !o.description?.toLowerCase().includes(keyword.toLowerCase())) return false;
       if (locationFilter && !o.location?.toLowerCase().includes(locationFilter.toLowerCase())) return false;
-      if (selectedCategories.length && !selectedCategories.includes(o.category)) return false;
+      if (selectedCategories.length && !selectedCategories.includes(o.type)) return false;
       if (selectedModes.length && !selectedModes.includes(o.work_mode)) return false;
       return true;
     });
   }, [opps, keyword, locationFilter, selectedCategories, selectedModes]);
 
-  const toggleCategory = (c: string) => setSelectedCategories(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  const toggleCategory = (c: string) => {
+    setSelectedCategories(prev => {
+      const next = prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c];
+      // Update URL params
+      if (next.length === 1) {
+        setSearchParams({ category: next[0] });
+      } else {
+        searchParams.delete("category");
+        setSearchParams(searchParams);
+      }
+      return next;
+    });
+  };
+
   const toggleMode = (m: string) => setSelectedModes(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m]);
-  const clearFilters = () => { setKeyword(""); setLocationFilter(""); setSelectedCategories([]); setSelectedModes([]); };
+
+  const clearFilters = () => {
+    setKeyword("");
+    setLocationFilter("");
+    setSelectedCategories([]);
+    setSelectedModes([]);
+    setSearchParams({});
+  };
 
   const FilterPanel = () => (
     <div className="space-y-6">
@@ -128,14 +159,12 @@ export default function OpportunitiesBrowse() {
       {/* Content */}
       <section className="container flex-1 py-10">
         <div className="flex gap-8">
-          {/* Sidebar filters - desktop */}
           <aside className="hidden w-56 shrink-0 lg:block">
             <div className="sticky top-24 glass-card rounded-xl p-5">
               <FilterPanel />
             </div>
           </aside>
 
-          {/* Mobile filter button */}
           <div className="lg:hidden fixed bottom-6 right-6 z-40">
             <Sheet>
               <SheetTrigger asChild>
@@ -149,7 +178,6 @@ export default function OpportunitiesBrowse() {
             </Sheet>
           </div>
 
-          {/* Opportunity list */}
           <div className="flex-1">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm text-muted-foreground">{filtered.length} opportunities found</p>
@@ -177,7 +205,7 @@ export default function OpportunitiesBrowse() {
                           <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors truncate">{opp.title}</h3>
                           <p className="text-sm text-muted-foreground">
                             {opp.company && <>{opp.company} · </>}
-                            {opp.location || "Remote"} 
+                            {opp.location || "Remote"}
                             {opp.deadline && <> · Due {new Date(opp.deadline).toLocaleDateString()}</>}
                           </p>
                           <div className="flex flex-wrap gap-2">

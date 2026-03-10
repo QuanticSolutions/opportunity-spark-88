@@ -31,7 +31,7 @@ export default function CategoryGrid() {
           {categories.map((cat) => (
             <button
               key={cat.label}
-              onClick={() => navigate(`/opportunities?type=${cat.type}`)}
+              onClick={() => navigate(`/opportunities?category=${cat.type}`)}
               className="group glow-border flex flex-col items-start gap-3 rounded-xl border border-border bg-card p-6 text-left transition-all duration-300 hover:border-primary/30 hover:shadow-[var(--card-shadow-hover)] hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-primary transition-all duration-300 group-hover:btn-gradient group-hover:text-primary-foreground">
