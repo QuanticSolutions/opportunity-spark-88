@@ -19,7 +19,7 @@ export default function LatestOpportunities() {
         .in("status", ["approved"])
         .order("created_at", { ascending: false })
         .limit(6);
-      console.log(data)
+      
       setOpps(data || []);
       setLoading(false);
     };

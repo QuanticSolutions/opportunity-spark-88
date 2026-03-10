@@ -97,6 +97,45 @@ export type Database = {
           },
         ]
       }
+      demo_requests: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string | null
+          organization_name: string
+          organization_type: string
+          phone: string | null
+          position_to_hire: string | null
+          preferred_demo_method: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message?: string | null
+          organization_name: string
+          organization_type?: string
+          phone?: string | null
+          position_to_hire?: string | null
+          preferred_demo_method?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          organization_name?: string
+          organization_type?: string
+          phone?: string | null
+          position_to_hire?: string | null
+          preferred_demo_method?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           application_id: string | null

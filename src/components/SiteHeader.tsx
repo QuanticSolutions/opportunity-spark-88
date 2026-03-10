@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Menu, X, User, LayoutDashboard, Settings, LogOut, ChevronDown, Search, Bell } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, User, LayoutDashboard, Settings, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,18 +20,22 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/LoginModal";
 
-const opportunityTypes = [
-  { label: "Scholarships", href: "/opportunities?type=scholarship" },
-  { label: "Fellowships", href: "/opportunities?type=fellowship" },
-  { label: "Internships", href: "/opportunities?type=internship" },
-  { label: "Grants", href: "/opportunities?type=grant" },
-  { label: "Workshops", href: "/opportunities?type=event" },
-  { label: "Conferences", href: "/opportunities?type=event" },
+const opportunityItems = [
+  { label: "Scholarships", category: "scholarship" },
+  { label: "Fellowships", category: "fellowship" },
+  { label: "Internships", category: "internship" },
+  { label: "Grants", category: "grant" },
+  { label: "Workshops", category: "workshop" },
+  { label: "Conferences", category: "conference" },
+];
+
+const serviceItems = [
+  { label: "Hire Talent", href: "/services/hire-talent" },
 ];
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Jobs", href: "/opportunities?type=job" },
+  { label: "Jobs", href: "/opportunities?category=job" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -47,6 +51,39 @@ export default function SiteHeader() {
     : "?";
 
   const dashboardPath = profile?.role === "provider" ? "/dashboard/provider" : "/dashboard/seeker";
+
+  const UserMenu = ({ align = "end" as const, compact = false }) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="relative rounded-full ring-2 ring-primary/20 hover:ring-primary/50 transition-all duration-200 focus:outline-none">
+          <Avatar className={compact ? "h-8 w-8" : "h-9 w-9"}>
+            <AvatarImage src={profile?.avatar_url || ""} />
+            <AvatarFallback className="bg-accent text-accent-foreground text-xs font-bold">{initials}</AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align={align} className="w-52 glass-card border-border/50 shadow-[var(--card-shadow-hover)] animate-fade-in">
+        <div className="px-3 py-2">
+          <p className="text-sm font-semibold text-foreground truncate">{profile?.full_name || "User"}</p>
+          {!compact && <p className="text-xs text-muted-foreground truncate">{user?.email}</p>}
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/profile`)} className="cursor-pointer gap-2 hover:bg-accent">
+          <User size={14} /> My Profile
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(dashboardPath)} className="cursor-pointer gap-2 hover:bg-accent">
+          <LayoutDashboard size={14} /> Dashboard
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/security`)} className="cursor-pointer gap-2 hover:bg-accent">
+          <Settings size={14} /> Settings
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={signOut} className="cursor-pointer gap-2 text-destructive hover:bg-destructive/10">
+          <LogOut size={14} /> Sign Out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <>
@@ -77,7 +114,31 @@ export default function SiteHeader() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid w-48 gap-1 p-2">
-                      {opportunityTypes.map((item) => (
+                      {opportunityItems.map((item) => (
+                        <button
+                          key={item.label}
+                          onClick={() => navigate(`/opportunities?category=${item.category}`)}
+                          className="rounded-md px-3 py-2 text-sm text-left text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            {/* Services dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-primary bg-transparent">
+                    Services
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid w-48 gap-1 p-2">
+                      {serviceItems.map((item) => (
                         <button
                           key={item.label}
                           onClick={() => navigate(item.href)}
@@ -104,71 +165,12 @@ export default function SiteHeader() {
                 </Button>
               </>
             )}
-
-            {!loading && user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="relative rounded-full ring-2 ring-primary/20 hover:ring-primary/50 transition-all duration-200 focus:outline-none">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={profile?.avatar_url || ""} />
-                      <AvatarFallback className="bg-accent text-accent-foreground text-xs font-bold">{initials}</AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52 glass-card border-border/50 shadow-[var(--card-shadow-hover)] animate-fade-in">
-                  <div className="px-3 py-2">
-                    <p className="text-sm font-semibold text-foreground truncate">{profile?.full_name || "User"}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/profile`)} className="cursor-pointer gap-2 hover:bg-accent">
-                    <User size={14} /> My Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(dashboardPath)} className="cursor-pointer gap-2 hover:bg-accent">
-                    <LayoutDashboard size={14} /> Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/security`)} className="cursor-pointer gap-2 hover:bg-accent">
-                    <Settings size={14} /> Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="cursor-pointer gap-2 text-destructive hover:bg-destructive/10">
-                    <LogOut size={14} /> Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {!loading && user && <UserMenu />}
           </div>
 
           {/* Mobile toggle */}
           <div className="flex items-center gap-3 lg:hidden">
-            {!loading && user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="rounded-full ring-2 ring-primary/20 focus:outline-none">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile?.avatar_url || ""} />
-                      <AvatarFallback className="bg-accent text-accent-foreground text-xs font-bold">{initials}</AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52 glass-card border-border/50 shadow-[var(--card-shadow-hover)]">
-                  <div className="px-3 py-2">
-                    <p className="text-sm font-semibold text-foreground truncate">{profile?.full_name || "User"}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`${dashboardPath}/profile`)} className="cursor-pointer gap-2">
-                    <User size={14} /> My Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(dashboardPath)} className="cursor-pointer gap-2">
-                    <LayoutDashboard size={14} /> Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="cursor-pointer gap-2 text-destructive">
-                    <LogOut size={14} /> Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {!loading && user && <UserMenu compact />}
             <button onClick={() => setOpen(!open)} className="text-primary" aria-label="Menu">
               {open ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -187,9 +189,23 @@ export default function SiteHeader() {
                 {l.label}
               </button>
             ))}
+
             <div className="space-y-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Opportunities</p>
-              {opportunityTypes.map((item) => (
+              {opportunityItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => { setOpen(false); navigate(`/opportunities?category=${item.category}`); }}
+                  className="block w-full text-left text-sm text-muted-foreground py-1.5 pl-2 hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Services</p>
+              {serviceItems.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => { setOpen(false); navigate(item.href); }}
@@ -199,6 +215,7 @@ export default function SiteHeader() {
                 </button>
               ))}
             </div>
+
             {!loading && !user && (
               <>
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 font-semibold w-full" onClick={() => { setOpen(false); setLoginOpen(true); }}>
